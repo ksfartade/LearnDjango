@@ -1,6 +1,5 @@
 from django.db import models
-from django.db.models import Q
-from django.db.models import Index, Max
+from django.db.models import Q, Index, Max
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
@@ -80,7 +79,7 @@ class SY(models.Model):
     marks       = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], null=True)
     # slug        = models.SlugField(unique=True)
     elective    = models.OneToOneField(Elective, related_name='student', on_delete=models.SET_NULL, null=True)
-    department  = models.ForeignKey(Department, related_name='students', on_delete=models.SET_NULL, null=True)
+    department  = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
     class Meta:
         ordering = ['division', '-name']
         verbose_name = 'SY Student Data'
