@@ -5,3 +5,4 @@ media
 tokens.txt
 myenv/
 venv/
+*.pyc
