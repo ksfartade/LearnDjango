@@ -4,3 +4,4 @@ db.sqlite3
 media
 tokens.txt
 twitter_api_test
+myenv/
