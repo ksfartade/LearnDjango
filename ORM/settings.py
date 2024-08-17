@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,16 +31,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 5
-}
 
 # Application definition
+custom_apps = [
+    'apps.library',
+    'apps.pagi_college',
+    'apps.dj_signals',
+    'apps.dj_celery',
+    'apps.dj_choices',
+    'apps.chatbox',
+    'apps.dj_views'
+]
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
+third_party_apps = [
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -47,18 +53,36 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    'apps.library',
     'django_extensions',
-    'apps.pagi_college',
-    'apps.dj_signals',
-    'apps.dj_celery',
     'django_celery_beat',
     'django_celery_results',
-    'apps.dj_choices',
     'channels',
-    'apps.chatbox',
-
+    'rest_framework.authtoken',
+    'accounts'
+    # 'rest_framework_simplejwt',
+    # 'rest_framework_simplejwt.token_blacklist',
 ]
+
+INSTALLED_APPS = custom_apps + third_party_apps
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
+}
+
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+# }
+
+
+# AUTH_USER_MODEL = "accounts.CustomUser"
+
 
 ASGI_APPLICATION = 'ORM.asgi.application'
 CHANNEL_LAYERS = {
@@ -87,12 +111,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# REST_FRAMEWORK = {
-    # 'DEFAULT_FILTER_BACKENDS': (
-    #     'django_filters.rest_framework.DjangoFilterBackend',
-    # ),
-# }
-
 ROOT_URLCONF = 'ORM.urls'
 
 TEMPLATES = [
@@ -116,9 +134,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ORM.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -132,8 +147,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
