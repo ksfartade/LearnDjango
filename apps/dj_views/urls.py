@@ -1,5 +1,9 @@
 from django.urls import path
 from .views import *
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('g-set', StateGenericViewSet, basename='state-generic-viewset')
 
 
 urlpatterns = [
@@ -7,3 +11,5 @@ urlpatterns = [
     path('get-single-state/<str:name>/', StateSingle.as_view()),
     path('g-state/', StateGenericAPIView.as_view(), name='state-generic-api-view'),
 ]
+
+urlpatterns += router.urls
