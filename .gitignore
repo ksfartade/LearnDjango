@@ -6,4 +6,4 @@ tokens.txt
 myenv/
 venv/
 *.pyc
-migrations/
+*migrations/
