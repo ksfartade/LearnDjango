@@ -30,6 +30,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
+}
 
 # Application definition
 
@@ -39,13 +43,40 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # 'daphne',
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
     'apps.library',
     'django_extensions',
+    'apps.pagi_college',
+    'apps.dj_signals',
+    'apps.dj_celery',
+    'django_celery_beat',
+    'django_celery_results',
+    'apps.dj_choices',
+    'channels',
+    'apps.chatbox',
+
 ]
 
+ASGI_APPLICATION = 'ORM.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+# save Celery task results in Django's database
+CELERY_RESULT_BACKEND = "django-db"
+# This configures Redis as the datastore between Django + Celery
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', default='redis://localhost:6379')
+# this allows you to schedule items in the Django admin.
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+
+
+LOGIN_REDIRECT_URL = "chat-page"
+LOGOUT_REDIRECT_URL = "login-user"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,7 +98,9 @@ ROOT_URLCONF = 'ORM.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'apps/chatbox/templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

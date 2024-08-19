@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializer import BookSerializer
 from .filters import BookFilter
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class BookView(generics.ListAPIView):
@@ -24,8 +25,11 @@ class BookViewAPIView(APIView):
         for backend in list(self.filter_backends):
             queryset = backend().filter_queryset(request, queryset, self)
 
-        serializer = BookSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        pagination = Paginator(queryset, 5)
+        page = request.query_params.get('page', 1)
+        result = pagination.get_page(page)
+        data = BookSerializer(result, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
     
 class BookModelViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()

@@ -21,4 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('library/', include('apps.library.urls')),
+    path('pagi/', include('apps.pagi_college.urls')),
+    # path('signals/', include('apps.dj_signals.urls')),
+    path('choices/', include('apps.dj_choices.urls')),
+    path('chat/', include('apps.chatbox.urls')),
 ]
