@@ -1,3 +1,9 @@
 env/
 db.sqlite3
 .env
+media
+tokens.txt
+myenv/
+venv/
+*.pyc
+migrations/
