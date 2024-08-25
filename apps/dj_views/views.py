@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import action
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect, redirect, reverse
+from rest_framework.test import APIClient
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework import generics
@@ -46,12 +48,26 @@ def get_countries(request, **kwargs):
         return response
 
 
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def get_countries_call(request, **kwargs):
+    if request.method == "GET":
+        view = StateList()
+        view = view.as_view()
+        response = view(request._request)
+        return response
+    else:
+        print("request method is not GET")
+        return HttpResponseRedirect('/views/g-state/')
+
+
 class StateList(ListAPIView):
     pagination_class = None
     serializer_class = StateSerializer
     queryset = State.objects.all()
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_class = StateFilter
+    permission_classes = [IsAuthenticated]
     # lookup_field = ['country__name']
 
     # def get_queryset(self):
