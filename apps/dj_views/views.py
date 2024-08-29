@@ -1,28 +1,28 @@
-from django.shortcuts import get_object_or_404, render
-from rest_framework.response import Response
 from django.http import JsonResponse, HttpResponse
-from rest_framework.decorators import api_view
-from django.views.decorators.http import require_http_methods, require_POST
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import action
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import HttpResponseRedirect, redirect, reverse
-from rest_framework.test import APIClient
-from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import HttpResponseRedirect, redirect
 
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework import generics
-from rest_framework.viewsets import GenericViewSet, ViewSet
-from rest_framework.views import APIView
 from rest_framework import mixins, viewsets
 
+from accounts.custom_auth import CustomTokenAuthentication
+from .permissions import BlocklistPermission
 from .serializers import *
 from .views import *
 from .filters import *
 import django_filters
 
 # @login_required
-# @api_view(['GET', 'POST'])
+@api_view(['GET', 'POST'])
+@authentication_classes([CustomTokenAuthentication])
+@permission_classes([BlocklistPermission])
 def get_state(request, **kwargs):
     if request.method == 'GET':
         queryset = State.objects.all()
@@ -61,13 +61,13 @@ def get_countries_call(request, **kwargs):
         return HttpResponseRedirect('/views/g-state/')
 
 
-class StateList(ListAPIView):
+class StateList(generics.ListAPIView):
     pagination_class = None
     serializer_class = StateSerializer
     queryset = State.objects.all()
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_class = StateFilter
-    permission_classes = [IsAuthenticated]
+    permission_classes = [BlocklistPermission]
     # lookup_field = ['country__name']
 
     # def get_queryset(self):
@@ -89,10 +89,12 @@ class StateGenericAPIView(GenericAPIView):
     pagination_class = None
     serializer_class = StateSerializer
     queryset = State.objects.all()
+    permission_classes = [AllowAny]
 
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_class = StateFilter
     def get(self, request, **kwargs):
+        print("user: ", request.user)
         queryset = self.filter_queryset(self.queryset)
         data = StateSerializer(queryset, many=True).data
         return Response(data, status=200)
