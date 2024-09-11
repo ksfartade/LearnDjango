@@ -24,12 +24,10 @@ class SYSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         print('to_internal_value, saving the instance data into DB')
         data['marks'] = data['marks']+5 if data['marks'] else 35
-        print('set_or_not: ', self.context['set_or_not'])
         return super().to_internal_value(data)
     
     def create(self, validated_data):
         print('creating the instance...')
-        print('set_or_not: ', self.context['set_or_not'])
 
         if not self.roll_no:
             current_max = SY.objects.filter(division=self.division).aggregate(Max('roll_no', default=0))
@@ -40,13 +38,11 @@ class SYSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         print('updating the insance...')
-        print('set_or_not: ', self.context['set_or_not'])
         return super().update(instance, validated_data)
     
     # call: .is_valid(). While deserialzing the data we must have to call .is_valid() method before saving.
     def validate(self, attrs):
         print('validating the data....')
-        print('set_or_not: ', self.context['set_or_not'])
         if attrs['marks'] is None:
             raise serializers.ValidationError('Marks should not be null.')
         return super().validate(attrs)
@@ -54,7 +50,6 @@ class SYSerializer(serializers.ModelSerializer):
     # call: .save(). If we don't pass model object in input then this save calls .create() method, otherwise this save calls .update() method.
     def save(self, **kwargs):
         print('saving the instance....')
-        print('set_or_not: ', self.context['set_or_not'])
         return super().save(**kwargs)
 
 

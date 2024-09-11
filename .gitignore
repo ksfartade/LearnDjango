@@ -7,3 +7,4 @@ myenv/
 venv/
 *.pyc
 *migrations/
+twitter_api_test/

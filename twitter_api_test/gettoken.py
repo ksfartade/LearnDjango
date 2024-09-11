@@ -80,29 +80,29 @@ def get_token():
 auth_tokens = get_token()
 print("Auth token", auth_tokens)
 
+def send_dm():
+    SEND_DM_TO_CONVERSATION = "https://api.twitter.com/2/dm_conversations/{}/messages"
 
-SEND_DM_TO_CONVERSATION = "https://api.twitter.com/2/dm_conversations/{}/messages"
+    dm_conversation_id = "1459536043116412936-1815353842252627968"
+    url = SEND_DM_TO_CONVERSATION.format(dm_conversation_id)
 
-dm_conversation_id = "1459536043116412936-1815353842252627968"
-url = SEND_DM_TO_CONVERSATION.format(dm_conversation_id)
+    headers = {
+        "Authorization": "Bearer {}".format(auth_tokens.get('access_token')),
+        "Content-Type": "application/json",
+    }
 
-headers = {
-    "Authorization": "Bearer {}".format(auth_tokens.get('access_token')),
-    "Content-Type": "application/json",
-}
+    body = {
+        "text" : "testing send message"
+    }
 
-body = {
-    "text" : "testing send message"
-}
+    body = json.dumps(body)
+    response = requests.post(
+        url=url,
+        headers=headers,
+        json=json.loads(body),
+    )
 
-body = json.dumps(body)
-response = requests.post(
-    url=url,
-    headers=headers,
-    json=json.loads(body),
-)
-
-print("Response: ", response.status_code, "Respone text: ", response.text)
+    print("Response: ", response.status_code, "Respone text: ", response.text)
 
 # access_token = access_token_response["access_token"]
 
