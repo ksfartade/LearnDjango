@@ -14,7 +14,7 @@ class State(models.Model):
     country     = models.ForeignKey(Country, related_name='states', null=True, on_delete=models.SET_NULL)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
-    form_date   = models.DateField(null=True)
+    # form_date   = models.DateField(null=True)
 
     def __str__(self) -> str:
         return self.name
