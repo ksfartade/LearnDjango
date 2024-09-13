@@ -186,7 +186,7 @@ USE_TZ = True
 STATIC_ROOT = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "staticfiles",
-    'apps/dj_views/static'
+    'apps/dj_views/images'
 ]
 
 STATIC_URL = 'static/'
