@@ -1,10 +1,6 @@
-# from django.contrib.auth.models import AbstractUser
-# from django.db import models
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, AbstractUser, User
 
-# class CustomUser(AbstractUser):
-#     email = models.EmailField(unique=True)
-
-#     # Add custom fields here, if needed
-
-#     def __str__(self):
-#         return self.username
+class CustomUser(User):
+    # Add any custom fields here
+    pass
